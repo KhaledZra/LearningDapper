@@ -10,6 +10,9 @@ class Program
     {
         Console.WriteLine("Learning dapper!");
 
+        // string test = dbManager.ConnectToDb().QuerySingle<string>("SELECT customers.name FROM customers WHERE customers.id = 3");
+        // Console.WriteLine(test);
+        
         using (dbManager.ConnectToDb())
         {
             SelectLabels(dbManager.ConnectToDb());
