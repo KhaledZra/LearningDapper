@@ -5,7 +5,7 @@ namespace DapperLDemo;
 
 class Program
 {
-    private static DatabaseManager dbManager = new DatabaseManager("localhost", "videoteket_tk", "pma");
+    private static DatabaseManager dbManager = new DatabaseManager();
     public static void Main(string[] args)
     {
         Console.WriteLine("Learning dapper!");
@@ -15,13 +15,20 @@ class Program
         
         using (dbManager.ConnectToDb())
         {
-            SelectLabels(dbManager.ConnectToDb());
-            
-            SelectMedias(dbManager.ConnectToDb());
-            
-            //InsertCustomer(connection);
-            
-            SelectCustomers(dbManager.ConnectToDb());
+            ShowCustomers();
+            // SelectLabels(dbManager.ConnectToDb());
+            //
+            // // multiple inserts?
+            //
+            // SelectMedias(dbManager.ConnectToDb());
+            //
+            // //InsertCustomer(connection);
+            //
+            // SelectCustomers(dbManager.ConnectToDb());
+            //
+            // Console.Write("Select customer: ");
+            // int.TryParse(Console.ReadLine(), out int search);
+            // SelectCustomer(dbManager.ConnectToDb(), search);
         }
     }
 
@@ -77,11 +84,28 @@ class Program
         }
     }
     
-    private static void SelectCustomers(MySqlConnection database)
+    private static void ShowCustomers()
     {
-        List<Customer> customers = database.Query<Customer>("SELECT * FROM customers;").ToList();
+        List<Customer> customers = dbManager.SqlSelect<Customer>(dbManager.ConnectToDb(), "customers");
 
         VisualHeader("Customers");
+        
+        foreach (Customer currentItem in customers)
+        {
+            Console.WriteLine($"{currentItem.Id}. " + currentItem.ToString());
+        }
+    }
+    
+    private static void SelectCustomer(MySqlConnection database, int id)
+    {
+        List<Customer> customers = database.Query<Customer>($"SELECT * FROM customers WHERE customers.id = {id};").ToList();
+
+        VisualHeader("Customer");
+        if (customers.Count == 0)
+        {
+            Console.WriteLine($"Ingen customer med id {id} ej hittad!");
+            return;
+        }
         
         foreach (Customer currentItem in customers)
         {

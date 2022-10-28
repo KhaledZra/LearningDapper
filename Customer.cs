@@ -1,6 +1,6 @@
 ﻿namespace DapperLDemo;
 
-class Customer
+class Customer : IsItem
 {
     public int Id { get; set; }
     public string? Email { get; set; }

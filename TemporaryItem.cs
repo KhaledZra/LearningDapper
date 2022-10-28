@@ -1,6 +1,6 @@
 ﻿namespace DapperLDemo;
 
-class TemporaryItem
+class TemporaryItem : IsItem
 {
     public int Id { get; set; }
     public int Label_Id { get; set; }
