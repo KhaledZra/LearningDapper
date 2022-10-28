@@ -17,6 +17,8 @@ class DatabaseManager
             UserID = "pma",
             Password = password
         };
+        
+        
     }
 
     public MySqlConnection ConnectToDb()
@@ -35,7 +37,7 @@ class DatabaseManager
         }
         formatedColumnNames = string.Join(", ", columnNames);
         
-        //Console.WriteLine(formatedColumnNames);
+        Console.WriteLine(formatedColumnNames); // to debug
         return db.Query<T>($"SELECT {formatedColumnNames} FROM {tableName};").ToList();
     }
 }

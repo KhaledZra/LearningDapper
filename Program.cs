@@ -5,31 +5,17 @@ namespace DapperLDemo;
 
 class Program
 {
-    private static DatabaseManager dbManager = new DatabaseManager();
     public static void Main(string[] args)
     {
+        DatabaseManager dbManager = new DatabaseManager();
         Console.WriteLine("Learning dapper!");
 
-        // string test = dbManager.ConnectToDb().QuerySingle<string>("SELECT customers.name FROM customers WHERE customers.id = 3");
-        // Console.WriteLine(test);
-        
-        using (dbManager.ConnectToDb())
-        {
-            ShowCustomers();
-            // SelectLabels(dbManager.ConnectToDb());
-            //
-            // // multiple inserts?
-            //
-            // SelectMedias(dbManager.ConnectToDb());
-            //
-            // //InsertCustomer(connection);
-            //
-            // SelectCustomers(dbManager.ConnectToDb());
-            //
-            // Console.Write("Select customer: ");
-            // int.TryParse(Console.ReadLine(), out int search);
-            // SelectCustomer(dbManager.ConnectToDb(), search);
-        }
+        ShowTable<Customer>(dbManager);
+        ShowTable<Media>(dbManager);
+        ShowTable<Label>(dbManager);
+        // ShowCustomers(dbManager);
+        // ShowMedias(dbManager);
+        // ShowLabels(dbManager);
     }
 
     private static void InsertCustomer(MySqlConnection connection)
@@ -74,7 +60,7 @@ class Program
     
     private static void SelectMedias(MySqlConnection database)
     {
-        List<Media> medias = database.Query<Media>("SELECT * FROM media;").ToList();
+        List<Media> medias = database.Query<Media>("SELECT * FROM medias;").ToList();
         
         VisualHeader("Medias");
             
@@ -84,13 +70,31 @@ class Program
         }
     }
     
-    private static void ShowCustomers()
+    private static void ShowCustomers(DatabaseManager db)
     {
-        List<Customer> customers = dbManager.SqlSelect<Customer>(dbManager.ConnectToDb(), "customers");
-
         VisualHeader("Customers");
         
-        foreach (Customer currentItem in customers)
+        foreach (Customer currentItem in db.SqlSelect<Customer>(db.ConnectToDb(), "customers"))
+        {
+            Console.WriteLine($"{currentItem.Id}. " + currentItem);
+        }
+    }
+    
+    private static void ShowMedias(DatabaseManager db)
+    {
+        VisualHeader("Medias");
+        
+        foreach (Media currentItem in db.SqlSelect<Media>(db.ConnectToDb(), "medias"))
+        {
+            Console.WriteLine($"{currentItem.Id}. " + currentItem); // to string is used automatically
+        }
+    }
+    
+    private static void ShowTable<T>(DatabaseManager db) where T : IsItem
+    {
+        string tableName = typeof(T).ToString().Split(".")[1];
+        VisualHeader(tableName+"s");
+        foreach (T currentItem in db.SqlSelect<T>(db.ConnectToDb(), tableName+"s"))
         {
             Console.WriteLine($"{currentItem.Id}. " + currentItem.ToString());
         }
@@ -109,7 +113,7 @@ class Program
         
         foreach (Customer currentItem in customers)
         {
-            Console.WriteLine($"{currentItem.Id}. " + currentItem.ToString());
+            Console.WriteLine($"{currentItem.Id}. " + currentItem);
         }
     }
 

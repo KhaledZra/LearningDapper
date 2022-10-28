@@ -6,4 +6,5 @@ public interface IsItem
     
     public string? Name { get; set; }
 
+    public string ToString();
 }
