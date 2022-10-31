@@ -6,8 +6,7 @@ namespace DapperLDemo;
 class DatabaseManager
 {
     private MySqlConnectionStringBuilder _connectionString;
-
-    // , , 
+    
     public DatabaseManager(string? password = "")
     {
         _connectionString = new MySqlConnectionStringBuilder
@@ -17,8 +16,6 @@ class DatabaseManager
             UserID = "pma",
             Password = password
         };
-        
-        
     }
 
     public MySqlConnection ConnectToDb()
@@ -37,7 +34,6 @@ class DatabaseManager
         }
         formatedColumnNames = string.Join(", ", columnNames);
         
-        Console.WriteLine(formatedColumnNames); // to debug
         return db.Query<T>($"SELECT {formatedColumnNames} FROM {tableName};").ToList();
     }
 }

@@ -3,20 +3,267 @@ using MySqlConnector;
 
 namespace DapperLDemo;
 
+#region Menu State enum
+
+enum MenuState // TODO Need to add more options later maybe?
+{
+    MainMenu,
+    
+    CreateMenu,
+    ReadMenu,
+    UpdateMenu,
+    DeleteMenu,
+    
+    Exit
+}
+
+#endregion
+
 class Program
 {
+    private static MenuState _menuState;
+    // Creating DB handler Object
+    private static DatabaseManager _dbManager = new DatabaseManager();
+    
     public static void Main(string[] args)
     {
-        DatabaseManager dbManager = new DatabaseManager();
+        Console.Clear();
         Console.WriteLine("Learning dapper!");
-
-        ShowTable<Customer>(dbManager);
-        ShowTable<Media>(dbManager);
-        ShowTable<Label>(dbManager);
-        // ShowCustomers(dbManager);
-        // ShowMedias(dbManager);
-        // ShowLabels(dbManager);
+        
+        _menuState = MenuState.MainMenu;
+        
+        while (MenuHandler() != 0) {}
     }
+    
+
+    #region GUI
+
+    private static void VisualHeader(string headerName)
+    {
+        Console.WriteLine("+-------------------------------+");
+        Console.WriteLine("             "+ headerName + "              ");
+        Console.WriteLine("+-------------------------------+");
+    }
+
+    #endregion
+    
+
+    #region Input Handlers
+
+    private static int ForceInteger(string prompt)
+    {
+        int result;
+        bool isParsed = false;
+        bool isAddedErrorMsg = false;
+        
+        do
+        {
+            Console.Write(prompt);
+            isParsed = int.TryParse(Console.ReadLine(), out result);
+            if (isParsed == false)
+            {
+                ClearLastLine();
+                if (isAddedErrorMsg == false)
+                {
+                    prompt = "Only numbers! " + prompt;
+                    isAddedErrorMsg = true;
+                }
+            }
+        } while (isParsed == false);
+
+        return result;
+    }
+
+    private static void ClearLastLine()
+    {
+        // Clear last attempt and reset write spot to original
+        Console.SetCursorPosition(0, Console.CursorTop -1);
+        Console.Write(new string(' ', Console.BufferWidth));
+        Console.SetCursorPosition(0, Console.CursorTop -1);
+    }
+
+    #endregion
+    
+
+    #region Menu Handlers
+
+    private static void MainMenuSwitcher(int switchOn)
+    {
+        Console.Clear();
+        
+        // Early Return
+        if (switchOn == 0)
+        {
+            Console.WriteLine("Bye!!");
+            _menuState = MenuState.Exit;
+            return;
+        }
+        
+        if (switchOn == 1)
+        {
+            Console.WriteLine("Select Table to add data into!");
+            _menuState = MenuState.CreateMenu;
+        }
+        else if (switchOn == 2)
+        {
+            Console.WriteLine("Select Table to check stored data!");
+            _menuState = MenuState.ReadMenu;
+        }
+        else if (switchOn == 3)
+        {
+            Console.WriteLine("Select Table to update a specific row of data from!");
+            _menuState = MenuState.UpdateMenu;
+        }
+        else if (switchOn == 4)
+        {
+            Console.WriteLine("Select Table to delete a specific row of data from!");
+            _menuState = MenuState.DeleteMenu;
+        }
+        else
+        {
+            Console.WriteLine("Error try again!");
+            _menuState = MenuState.MainMenu;
+        }
+    }
+    
+    private static int MenuHandler()
+    {
+        int returnValue = 1;
+        
+        Console.WriteLine("---------");
+        if (_menuState == MenuState.Exit)
+        {
+            returnValue = 0;
+        }
+        else if (_menuState == MenuState.MainMenu)
+        {
+            MainMenuSwitcher(MainMenu());
+        }
+        else
+        {
+            SelectMenuHandler(SelectMenu());
+        }
+        
+        return returnValue;
+    }
+    
+    private static void SelectMenuHandler(int choice)
+    {
+        Console.Clear();
+        if (choice == 0)
+        {
+            _menuState = MenuState.MainMenu;
+        }
+        else if (choice >= 1 && choice <= 6)
+        {
+            if (_menuState == MenuState.CreateMenu)
+            {
+                CreateMenu();
+            }
+            else if (_menuState == MenuState.ReadMenu)
+            {
+                ReadMenu(choice);
+            }
+            else if (_menuState == MenuState.UpdateMenu)
+            {
+                UpdateMenu();
+            }
+            else if (_menuState == MenuState.DeleteMenu)
+            {
+                DeleteMenu();
+            }
+            _menuState = MenuState.MainMenu;
+        }
+        else
+        {
+            Console.WriteLine("Try again!");
+        }
+    }
+
+    #endregion
+
+    
+    #region Menu prints
+
+    // Menu prints
+    private static int MainMenu()
+    {
+        // C.R.U.D System model
+        Console.WriteLine("1. Create row to table");
+        Console.WriteLine("2. Read table");
+        Console.WriteLine("3. Update row in table");
+        Console.WriteLine("4. Delete row from table");
+        Console.WriteLine("0. Exit");
+        return ForceInteger("Choice: ");
+    }
+
+    private static int SelectMenu()
+    {
+        Console.WriteLine("1. Select Customers");
+        Console.WriteLine("2. Select Medias");
+        Console.WriteLine("3. Select Labels");
+        Console.WriteLine("4. Select Orders");
+        Console.WriteLine("5. Select Permanent items");
+        Console.WriteLine("6. Select Temporary items");
+        Console.WriteLine("0. Go back");
+        return ForceInteger("Choice: ");
+    }
+
+    #endregion
+
+
+    #region Menu result handlers - NOT DONE
+
+    private static void CreateMenu() // TODO INSERT METHOD
+    {
+        Console.WriteLine("Not added feature!");
+    }
+    
+    private static void ReadMenu(int choice)
+    {
+        if (choice == 1)
+        {
+            ShowTable<Customer>(_dbManager);
+        }
+        else if (choice == 2)
+        {
+            ShowTable<Media>(_dbManager);
+        }
+        else if (choice == 3)
+        {
+            ShowTable<Label>(_dbManager);
+        }
+        else if (choice == 4)
+        {
+            Console.WriteLine("--Order--");
+            Console.WriteLine("Not added feature!");
+        }
+        else if (choice == 5)
+        {
+            Console.WriteLine("--Permanent items--");
+            Console.WriteLine("Not added feature!");
+        }
+        else if (choice == 6)
+        {
+            Console.WriteLine("--Temporary items--");
+            Console.WriteLine("Not added feature!");
+        }
+    }  
+    
+    private static void UpdateMenu() // TODO UPDATE METHOD
+    {
+        Console.WriteLine("Not added feature!");
+    }
+    
+    private static void DeleteMenu() // TODO DELETE METHOD
+    {
+        Console.WriteLine("Not added feature!");
+    }
+
+    #endregion
+
+
+    #region Db and UI handlers NOT DONE
 
     private static void InsertCustomer(MySqlConnection connection)
     {
@@ -37,83 +284,16 @@ class Program
         //     cust1.Adress_City,
         //     cust1.Phone_Number,
         // });
-    }
+    } // TODO REFACTOR AND REMOVE! InsertCustomer()
 
-    private static void VisualHeader(string headerName)
-    {
-        Console.WriteLine("+-------------------------------+");
-        Console.WriteLine("             "+ headerName + "              ");
-        Console.WriteLine("+-------------------------------+");
-    }
-
-    private static void SelectLabels(MySqlConnection database)
-    {
-        List<Label> labels = database.Query<Label>("SELECT * FROM labels;").ToList();
-
-        VisualHeader("Labels");
-        
-        foreach (Label currentItem in labels)
-        {
-            Console.WriteLine($"{currentItem.Id}. {currentItem.Name}");
-        }
-    }
-    
-    private static void SelectMedias(MySqlConnection database)
-    {
-        List<Media> medias = database.Query<Media>("SELECT * FROM medias;").ToList();
-        
-        VisualHeader("Medias");
-            
-        foreach (Media currentItem in medias)
-        {
-            Console.WriteLine($"{currentItem.Id}. {currentItem.Name}");
-        }
-    }
-    
-    private static void ShowCustomers(DatabaseManager db)
-    {
-        VisualHeader("Customers");
-        
-        foreach (Customer currentItem in db.SqlSelect<Customer>(db.ConnectToDb(), "customers"))
-        {
-            Console.WriteLine($"{currentItem.Id}. " + currentItem);
-        }
-    }
-    
-    private static void ShowMedias(DatabaseManager db)
-    {
-        VisualHeader("Medias");
-        
-        foreach (Media currentItem in db.SqlSelect<Media>(db.ConnectToDb(), "medias"))
-        {
-            Console.WriteLine($"{currentItem.Id}. " + currentItem); // to string is used automatically
-        }
-    }
-    
     private static void ShowTable<T>(DatabaseManager db) where T : IsItem
     {
         string tableName = typeof(T).ToString().Split(".")[1];
         VisualHeader(tableName+"s");
         foreach (T currentItem in db.SqlSelect<T>(db.ConnectToDb(), tableName+"s"))
         {
-            Console.WriteLine($"{currentItem.Id}. " + currentItem.ToString());
-        }
-    }
-    
-    private static void SelectCustomer(MySqlConnection database, int id)
-    {
-        List<Customer> customers = database.Query<Customer>($"SELECT * FROM customers WHERE customers.id = {id};").ToList();
-
-        VisualHeader("Customer");
-        if (customers.Count == 0)
-        {
-            Console.WriteLine($"Ingen customer med id {id} ej hittad!");
-            return;
-        }
-        
-        foreach (Customer currentItem in customers)
-        {
-            Console.WriteLine($"{currentItem.Id}. " + currentItem);
+            Console.WriteLine($"{currentItem.Id}. {currentItem.ToString()}");
+            Console.WriteLine("---");
         }
     }
 
@@ -125,6 +305,7 @@ class Program
         string? tempAdressZip;
         string? tempAdressCity;
         string? tempPhoneNumber;
+        
         
         Console.Write("Enter email: ");
         tempEmail = Console.ReadLine();
@@ -147,4 +328,6 @@ class Program
         return new Customer(tempEmail, tempName, tempAdressStreet, tempAdressZip,
             tempAdressCity, tempPhoneNumber);
     }
+
+    #endregion
 }
