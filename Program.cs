@@ -21,7 +21,7 @@ enum MenuState // TODO Need to add more options later maybe?
 
 class Program
 {
-    private static MenuState _menuState;
+    private static MenuState _menuState = MenuState.MainMenu;
     // Creating DB handler Object
     private static DatabaseManager _dbManager = new DatabaseManager();
     
@@ -29,9 +29,7 @@ class Program
     {
         Console.Clear();
         Console.WriteLine("Learning dapper!");
-        
-        _menuState = MenuState.MainMenu;
-        
+
         while (MenuHandler() != 0) {}
     }
     
@@ -119,10 +117,29 @@ class Program
             Console.WriteLine("Select Table to delete a specific row of data from!");
             _menuState = MenuState.DeleteMenu;
         }
+        else if (switchOn == 5)
+        {
+            Console.WriteLine("Feature not implemented!");
+        }
+        else if (switchOn == 6)
+        {
+            Console.WriteLine("Feature not implemented!");
+        }
+        else if (switchOn == 7)
+        {
+            Console.WriteLine("Feature not implemented!");
+        }
+        else if (switchOn == 8)
+        {
+            Console.WriteLine("Feature not implemented!");
+        }
+        else if (switchOn == 9)
+        {
+            Console.WriteLine("Feature not implemented!");
+        }
         else
         {
             Console.WriteLine("Error try again!");
-            _menuState = MenuState.MainMenu;
         }
     }
     
@@ -158,7 +175,7 @@ class Program
         {
             if (_menuState == MenuState.CreateMenu)
             {
-                CreateMenu();
+                CreateMenu(choice);
             }
             else if (_menuState == MenuState.ReadMenu)
             {
@@ -193,6 +210,11 @@ class Program
         Console.WriteLine("2. Read table");
         Console.WriteLine("3. Update row in table");
         Console.WriteLine("4. Delete row from table");
+        Console.WriteLine("5. Search for customer");
+        Console.WriteLine("6. Register Sale");
+        Console.WriteLine("7. Register Loan");
+        Console.WriteLine("8. Register Return");
+        Console.WriteLine("9. Print receipt");
         Console.WriteLine("0. Exit");
         return ForceInteger("Choice: ");
     }
@@ -214,9 +236,16 @@ class Program
 
     #region Menu result handlers - NOT DONE
 
-    private static void CreateMenu() // TODO INSERT METHOD
+    private static void CreateMenu(int choice) // TODO INSERT METHOD
     {
-        Console.WriteLine("Not added feature!");
+        if (choice == 1)
+        {
+            AddToTable<Customer>(_dbManager);
+        }
+        else
+        {
+            Console.WriteLine("Not added feature!");
+        }
     }
     
     private static void ReadMenu(int choice)
@@ -272,9 +301,8 @@ class Program
             "INSERT INTO customers (email, name, adress_street, adress_zipcode, adress_city, phone_number) " +
             "VALUES (@Email, @Name, @Adress_Street, @Adress_Zipcode, @Adress_City, @Phone_Number)";
 
-        int result = connection.Execute(sqlCode, CreateCustomer());
-        Console.WriteLine(result);
-        
+        connection.Execute(sqlCode, CreateCustomer());
+
         // int result = connection.Execute(sqlCode, new
         // {
         //     cust1.Name,
@@ -290,11 +318,60 @@ class Program
     {
         string tableName = typeof(T).ToString().Split(".")[1];
         VisualHeader(tableName+"s");
+        
         foreach (T currentItem in db.SqlSelect<T>(db.ConnectToDb(), tableName+"s"))
         {
             Console.WriteLine($"{currentItem.Id}. {currentItem.ToString()}");
             Console.WriteLine("---");
         }
+    }
+
+    private static void AddToTable<T>(DatabaseManager db)
+    {
+        string tableName = typeof(T).ToString().Split(".")[1] + "s";
+        var newObject = CreateTableObject<T>();
+
+        if (newObject != null)
+        {
+            db.SqlInsert<T>(db.ConnectToDb(), tableName, newObject);
+            Console.WriteLine(newObject.ToString());
+            Console.WriteLine("---Added!--");
+        }
+        else
+        {
+            Console.WriteLine("Failed!");
+        }
+    }
+
+    private static dynamic CreateTableObject<T>()
+    {
+        if (typeof(T) == typeof(Customer))
+        {
+            return CreateCustomer();
+        }
+        
+        // if (typeof(T) == typeof(Customer))
+        // {
+        //     return new object();
+        // }
+        //
+        // if (typeof(T) == typeof(Customer))
+        // {
+        //     return new object();
+        // }
+        //
+        // if (typeof(T) == typeof(Customer))
+        // {
+        //     return new object();
+        // }
+        //
+        // if (typeof(T) == typeof(Customer))
+        // {
+        //     return new object();
+        // }
+        
+        // failed
+        return null;
     }
 
     private static Customer CreateCustomer()
@@ -324,6 +401,8 @@ class Program
         
         Console.Write("Enter phone number: ");
         tempPhoneNumber = Console.ReadLine();
+        
+        Console.Clear();
 
         return new Customer(tempEmail, tempName, tempAdressStreet, tempAdressZip,
             tempAdressCity, tempPhoneNumber);

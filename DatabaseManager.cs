@@ -23,17 +23,68 @@ class DatabaseManager
         return new MySqlConnection(_connectionString.ConnectionString);
     }
 
-    public List<T> SqlSelect<T>(MySqlConnection db, string tableName) where T : IsItem
+    // Gets properties from a class and turns them into SQL insert code format
+    private string GetFormatedPropertiesString<T>()
     {
         List<string> columnNames = new List<string>();
         string formatedColumnNames = "";
         
         foreach (var item in typeof(T).GetProperties())
         {
-            columnNames.Add($"{tableName}.{item.ToString().Split(" ")[1]}");
+            if (item.ToString().Split(" ")[1].ToLower() != "id")
+            {
+                columnNames.Add($"@{item.ToString().Split(" ")[1]}");
+            }
         }
         formatedColumnNames = string.Join(", ", columnNames);
         
-        return db.Query<T>($"SELECT {formatedColumnNames} FROM {tableName};").ToList();
+        return formatedColumnNames;
+    }
+    
+    // Gets properties from a class and turns them into SQL select code format
+    private string GetFormatedPropertiesString<T>(string tableName, bool isRemoveId)
+    {
+        List<string> columnNames = new List<string>();
+        string formatedColumnNames = "";
+        
+        foreach (var item in typeof(T).GetProperties())
+        {
+            if (isRemoveId)
+            {
+                if (item.ToString().Split(" ")[1].ToLower() != "id")
+                {
+                    columnNames.Add($"{tableName}.{item.ToString().Split(" ")[1]}");
+                }
+            }
+            else
+            {
+                columnNames.Add($"{tableName}.{item.ToString().Split(" ")[1]}");
+            }
+            
+        }
+        formatedColumnNames = string.Join(", ", columnNames);
+        
+        return formatedColumnNames;
+    }
+    
+    
+    // CRUD methods
+    public void SqlInsert<T>(MySqlConnection db, string tableName, T data) // Create
+    {
+        string columnNames = GetFormatedPropertiesString<T>(tableName, true);
+        string columnNamesValues = GetFormatedPropertiesString<T>();
+        
+        string sqlCode =
+            $"INSERT INTO {tableName} ({columnNames}) " +
+            $"VALUES ({columnNamesValues})";
+        
+        db.Execute(sqlCode, data);
+    }
+    
+    public List<T> SqlSelect<T>(MySqlConnection db, string tableName) where T : IsItem // Read
+    {
+        string columnNames = GetFormatedPropertiesString<T>(tableName, false);
+
+        return db.Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
     }
 }
