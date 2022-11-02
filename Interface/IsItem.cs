@@ -1,8 +1,6 @@
 ﻿namespace DapperLDemo;
 
-public interface IsItem
+public interface IsItem // Entity, kanske ha abstrakt basklass
 {
     public int Id { get; set; }
-
-    public string ToString();
 }

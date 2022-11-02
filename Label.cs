@@ -1,6 +1,6 @@
 ﻿namespace DapperLDemo;
 
-class Label : IsItem
+class Label : IsItem, IFormatedToString
 {
     public int Id { get; set; }
     public string? Name { get; set; }

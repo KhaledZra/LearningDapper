@@ -24,7 +24,7 @@ class DatabaseManager
     }
 
     // Gets properties from a class and turns them into SQL insert code format
-    private string GetFormatedPropertiesString<T>()
+    private string GetFormatedPropertiesString<T>() where T : IFormatedToString
     {
         List<string> columnNames = new List<string>();
         string formatedColumnNames = "";
@@ -69,7 +69,7 @@ class DatabaseManager
     
     
     // CRUD methods
-    public void SqlInsert<T>(MySqlConnection db, string tableName, T data) // Create
+    public void SqlInsert<T>(MySqlConnection db, string tableName, T data) where T : IFormatedToString
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, true);
         string columnNamesValues = GetFormatedPropertiesString<T>();

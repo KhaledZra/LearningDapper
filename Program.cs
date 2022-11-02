@@ -30,9 +30,44 @@ class Program
         Console.Clear();
         Console.WriteLine("Learning dapper!");
 
-        while (MenuHandler() != 0) {}
+        List<string> listTest = ListMethod();
+        IEnumerable<string> ieTest = IEnumerableMethod();
+
+        Console.WriteLine(listTest);
+        Console.WriteLine(ieTest);
+        
+        // Displays the values of the Array.
+        int i = 0;
+        System.Collections.IEnumerator myEnumerator = ieTest.GetEnumerator();
+        Console.WriteLine( "The Array contains the following values:" );
+        while (( myEnumerator.MoveNext() ) && ( myEnumerator.Current != null ))
+            Console.WriteLine( "[{0}] {1}", i++, myEnumerator.Current );
+
+        // while (MenuHandler() != 0) {}
+    }
+
+    public static List<string> ListMethod()
+    {
+        List<string> strings = new List<string>();
+        
+        strings.Add("test");
+        strings.Add("test");
+        strings.Add("test");
+
+        return strings;
     }
     
+    public static IEnumerable<string> IEnumerableMethod()
+    {
+        List<string> strings = new List<string>();
+        
+        strings.Add("test");
+        strings.Add("test");
+        strings.Add("test");
+
+        return strings;
+    }
+
 
     #region GUI
 
@@ -242,6 +277,10 @@ class Program
         {
             AddToTable<Customer>(_dbManager);
         }
+        else if (choice == 5)
+        {
+            AddToTable<PermanentItem>(_dbManager);
+        }
         else
         {
             Console.WriteLine("Not added feature!");
@@ -294,27 +333,27 @@ class Program
 
     #region Db and UI handlers NOT DONE
 
-    private static void InsertCustomer(MySqlConnection connection)
-    {
-        VisualHeader("Inserting Customer");
-        string sqlCode =
-            "INSERT INTO customers (email, name, adress_street, adress_zipcode, adress_city, phone_number) " +
-            "VALUES (@Email, @Name, @Adress_Street, @Adress_Zipcode, @Adress_City, @Phone_Number)";
+    // private static void InsertCustomer(MySqlConnection connection)
+    // {
+    //     VisualHeader("Inserting Customer");
+    //     string sqlCode =
+    //         "INSERT INTO customers (email, name, adress_street, adress_zipcode, adress_city, phone_number) " +
+    //         "VALUES (@Email, @Name, @Adress_Street, @Adress_Zipcode, @Adress_City, @Phone_Number)";
+    //
+    //     connection.Execute(sqlCode, CreateCustomer());
+    //
+    //     // int result = connection.Execute(sqlCode, new
+    //     // {
+    //     //     cust1.Name,
+    //     //     cust1.Email,
+    //     //     cust1.Adress_Street,
+    //     //     cust1.Adress_Zipcode,
+    //     //     cust1.Adress_City,
+    //     //     cust1.Phone_Number,
+    //     // });
+    // } // TODO REFACTOR AND REMOVE! InsertCustomer()
 
-        connection.Execute(sqlCode, CreateCustomer());
-
-        // int result = connection.Execute(sqlCode, new
-        // {
-        //     cust1.Name,
-        //     cust1.Email,
-        //     cust1.Adress_Street,
-        //     cust1.Adress_Zipcode,
-        //     cust1.Adress_City,
-        //     cust1.Phone_Number,
-        // });
-    } // TODO REFACTOR AND REMOVE! InsertCustomer()
-
-    private static void ShowTable<T>(DatabaseManager db) where T : IsItem
+    private static void ShowTable<T>(DatabaseManager db) where T : IsItem, IFormatedToString
     {
         string tableName = typeof(T).ToString().Split(".")[1];
         VisualHeader(tableName+"s");
@@ -326,7 +365,7 @@ class Program
         }
     }
 
-    private static void AddToTable<T>(DatabaseManager db)
+    private static void AddToTable<T>(DatabaseManager db) where T : IFormatedToString
     {
         string tableName = typeof(T).ToString().Split(".")[1] + "s";
         var newObject = CreateTableObject<T>();
@@ -350,10 +389,10 @@ class Program
             return CreateCustomer();
         }
         
-        // if (typeof(T) == typeof(Customer))
-        // {
-        //     return new object();
-        // }
+        if (typeof(T) == typeof(PermanentItem))
+        {
+            return CreatePermanentItem();
+        }
         //
         // if (typeof(T) == typeof(Customer))
         // {
@@ -406,6 +445,54 @@ class Program
 
         return new Customer(tempEmail, tempName, tempAdressStreet, tempAdressZip,
             tempAdressCity, tempPhoneNumber);
+    }
+    
+    private static PermanentItem CreatePermanentItem()
+    {
+        int label_Id;
+        int media_Id;
+        string? tempName;
+        double tempPrice;
+
+
+        
+        Console.Write("Pick label: ");
+        if (!int.TryParse(Console.ReadLine(), out label_Id))
+        {
+            Console.WriteLine("Only numbers!");
+            return null;
+        }
+        else
+        {
+            // TODO create searchFeature that checks if the label_id given matches
+            // TODO the labels stored in DB
+        }
+        
+        Console.Write("Pick media: ");
+        if (!int.TryParse(Console.ReadLine(), out media_Id))
+        {
+            Console.WriteLine("Only numbers!");
+            return null;
+        }
+        else
+        {
+            // TODO create searchFeature that checks if the media_Id given matches
+            // TODO the labels stored in DB
+        }
+        
+        Console.Write("Enter product name: ");
+        tempName = Console.ReadLine();
+        
+        Console.Write("Enter product price: ");
+        if (double.TryParse(Console.ReadLine(), out tempPrice))
+        {
+            Console.WriteLine("Only numbers!");
+            return null;
+        }
+
+        Console.Clear();
+
+        return new PermanentItem();
     }
 
     #endregion

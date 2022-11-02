@@ -1,6 +1,6 @@
 ﻿namespace DapperLDemo;
 
-class Customer : IsItem
+class Customer : IsItem, IFormatedToString
 {
     public int Id { get; set; }
     public string? Email { get; set; }
@@ -35,7 +35,7 @@ class Customer : IsItem
         Phone_Number = phone_Number;
     }
 
-    public override string ToString()
+    public override string ToString() 
     {
         return $"Email: {Email}, Name: {Name}, " +
                $"\nAdress: {Adress_Street}, {Adress_Zipcode}, {Adress_City}," +

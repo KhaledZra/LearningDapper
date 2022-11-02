@@ -1,0 +1,22 @@
+﻿grafikkort interface
+- metalbil, vart sitter den (skruv, hål)
+- nätverks input
+- bild output
+- guld kontakt
+
+hdmi interface
+- kan koppla till vad som följer hdmi standard
+
+begrepp Low Coupling
+
+interface IBorrowable
+{
+    public bool Borrow() { return true; }
+}
+
+en klass kan implementera flera interfaces
+
+tänk på interface först och sedan logik
+
+Använd interface för att göra enkla kopplingar mellan dom olika klasserna
+som implementerar interfaces.
