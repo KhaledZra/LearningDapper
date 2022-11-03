@@ -29,8 +29,9 @@ class Program
     {
         Console.Clear();
         Console.WriteLine("Learning dapper!");
-        
-        while (MenuHandler() != 0) {}
+
+
+        //while (MenuHandler() != 0) {}
     }
 
     public static List<string> ListMethod()
@@ -360,7 +361,7 @@ class Program
         
         foreach (T currentItem in db.SqlSelect<T>(tableName+"s"))
         {
-            Console.WriteLine($"{currentItem.Id}. {currentItem.ToString()}");
+            Console.WriteLine($"{currentItem.Id}. {currentItem.FormatedToString()}");
             Console.WriteLine("---");
         }
     }
@@ -373,7 +374,7 @@ class Program
         if (newObject != null)
         {
             db.SqlInsert<T>(tableName, newObject);
-            Console.WriteLine(newObject.ToString());
+            Console.WriteLine(newObject.FormatedToString());
             Console.WriteLine("---Added!--");
         }
         else
@@ -411,6 +412,42 @@ class Program
         
         // failed
         return null;
+    }
+
+    private static T FindRowInTable<T>(DatabaseManager db, int id) where T : Entity
+    {
+        string tableName = typeof(T).ToString().Split(".")[1] + "s";
+
+        List<T> result = db.SqlSelectWhere<T>(tableName, id);
+
+        if (result.Count == 0)
+        {
+            return null;
+        }
+        
+        if (result.Count == 1)
+        {
+            return result[0];
+        }
+        
+        Console.WriteLine("Security error!");
+        return null;
+    }
+
+    private static void UpdateRowInTable<T>(DatabaseManager db, int id) where T : Entity
+    {
+        var currentData = FindRowInTable<Customer>(db, id);
+
+        if (currentData == null)
+        {
+            Console.WriteLine("Not found!");
+            return;
+        }
+
+        Console.WriteLine("Enter new information for to replace!");
+        var newData = CreateTableObject<T>();
+        
+        // replace with sql method
     }
 
     private static Customer CreateCustomer()

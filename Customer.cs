@@ -37,6 +37,13 @@ class Customer : Entity, IFormatedToString
 
     public override string ToString() 
     {
+        return $"{Email}, {Name}, " +
+               $"{Adress_Street}, {Adress_Zipcode}, {Adress_City}, " +
+               $"{Phone_Number}";
+    }
+
+    public string FormatedToString()
+    {
         return $"Email: {Email}, Name: {Name}, " +
                $"\nAdress: {Adress_Street}, {Adress_Zipcode}, {Adress_City}," +
                $"\nPhone Number: {Phone_Number}";

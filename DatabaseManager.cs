@@ -66,10 +66,32 @@ class DatabaseManager
         
         return formatedColumnNames;
     }
+
+    public string GetFormatedSetString<T>(T data, string tableName) where T : IFormatedToString
+    {
+        string[] objectInputStrings = GetFormatedPropertiesString<T>().Split(", ");
+        string[] objectPropertieStrings = GetFormatedPropertiesString<T>(tableName, true).Split(", ");
+        string formatedSetString = "";
+
+        for(int i = 0; i < objectInputStrings.Length; i++)
+        {
+            if (objectPropertieStrings.Length - 1 == i) // save last one diffrent
+            {
+                formatedSetString = formatedSetString + $"{objectPropertieStrings[i]} = {objectInputStrings[i]}";
+            }
+            else
+            {
+                formatedSetString = formatedSetString + $"{objectPropertieStrings[i]} = {objectInputStrings[i]}, ";
+            }
+        }
+
+        return formatedSetString;
+    }
     
     
     // CRUD methods
-    public void SqlInsert<T>(string tableName, T data) where T : IFormatedToString // Create
+    // Create
+    public void SqlInsert<T>(string tableName, T data) where T : IFormatedToString
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, true);
         string columnNamesValues = GetFormatedPropertiesString<T>();
@@ -81,17 +103,35 @@ class DatabaseManager
         ConnectToDb().Execute(sqlCode, data);
     }
     
-    public List<T> SqlSelect<T>(string tableName) where T : Entity // Read
+    // Read
+    public List<T> SqlSelect<T>(string tableName) where T : Entity 
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, false);
 
         return ConnectToDb().Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
     }
     
-    public List<T> SqlUpdate<T>(string tableName) where T : Entity // Update
+    public List<T> SqlSelectWhere<T>(string tableName, int id) where T : Entity
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, false);
-
-        return ConnectToDb().Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
+        
+        return ConnectToDb().Query<T>($"SELECT {columnNames} FROM {tableName} WHERE {tableName}.id = {id};").ToList();
     }
+    
+    // Update
+    public bool SqlUpdate<T>(string tableName, T newData, int currentId) where T : Entity, IFormatedToString
+    {
+        string setString = GetFormatedSetString(newData, tableName);
+
+        string sqlCode =
+            @$"UPDATE {tableName} SET {setString} WHERE {tableName}.id = {currentId};";
+
+        ConnectToDb().Execute(sqlCode, newData);
+
+        return true;
+    }
+    
+    // Delete
+    public bool SqlDelete<T>(string tableName, T newData) where T : Entity => 
+        ConnectToDb().Execute($"DELETE FROM {tableName} WHERE {tableName}.id = {newData.Id};") >= 1 ? true : false;
 }

@@ -9,4 +9,9 @@ class Label : Entity, IFormatedToString
     {
         return $"{Name}";
     }
+
+    public string FormatedToString()
+    {
+        return $"Name: {Name}";
+    }
 }

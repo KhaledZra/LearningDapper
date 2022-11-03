@@ -9,4 +9,9 @@ class Media : Entity, IFormatedToString
     {
         return $"{Name}";
     }
+    
+    public string FormatedToString()
+    {
+        return $"Name: {Name}";
+    }
 }

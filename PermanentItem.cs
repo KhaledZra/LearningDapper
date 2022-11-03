@@ -10,6 +10,13 @@ class PermanentItem : Entity, IFormatedToString
 
     public string ToString()
     {
+        return $"{Name}, " +
+               $"{Label_Id}, {Media_Id}, " +
+               $"{Price}";
+    }
+    
+    public string FormatedToString()
+    {
         return $"Name: {Name} " +
                $"\nInfo: {Label_Id}, {Media_Id}" +
                $"\nPrice: {Price}";
