@@ -126,10 +126,10 @@ class DatabaseManager
         string sqlCode =
             @$"UPDATE {tableName} SET {setString} WHERE {tableName}.id = {oldData.Id};";
 
-        return ConnectToDb().Execute(sqlCode, newData) == 1 ? true : false;
+        return ConnectToDb().Execute(sqlCode, newData) == 1;
     }
     
     // Delete
-    public bool SqlDelete<T>(string tableName, T data) where T : Entity => 
-        ConnectToDb().Execute($"DELETE FROM {tableName} WHERE {tableName}.id = {data.Id};") >= 1 ? true : false;
+    public bool SqlDelete<T>(string tableName, T data) where T : Entity =>
+        ConnectToDb().Execute($"DELETE FROM {tableName} WHERE {tableName}.id = {data.Id};") == 1;
 }
