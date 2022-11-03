@@ -119,19 +119,17 @@ class DatabaseManager
     }
     
     // Update
-    public bool SqlUpdate<T>(string tableName, T newData, int currentId) where T : Entity, IFormatedToString
+    public bool SqlUpdate<T>(string tableName, T newData, T oldData) where T : Entity, IFormatedToString
     {
         string setString = GetFormatedSetString(newData, tableName);
 
         string sqlCode =
-            @$"UPDATE {tableName} SET {setString} WHERE {tableName}.id = {currentId};";
+            @$"UPDATE {tableName} SET {setString} WHERE {tableName}.id = {oldData.Id};";
 
-        ConnectToDb().Execute(sqlCode, newData);
-
-        return true;
+        return ConnectToDb().Execute(sqlCode, newData) == 1 ? true : false;
     }
     
     // Delete
-    public bool SqlDelete<T>(string tableName, T newData) where T : Entity => 
-        ConnectToDb().Execute($"DELETE FROM {tableName} WHERE {tableName}.id = {newData.Id};") >= 1 ? true : false;
+    public bool SqlDelete<T>(string tableName, T data) where T : Entity => 
+        ConnectToDb().Execute($"DELETE FROM {tableName} WHERE {tableName}.id = {data.Id};") >= 1 ? true : false;
 }

@@ -30,6 +30,8 @@ class Program
         Console.Clear();
         Console.WriteLine("Learning dapper!");
 
+        Console.WriteLine(_dbManager.SqlUpdate("customers", CreateCustomer(), _dbManager.SqlSelectWhere<Customer>("customers", 0)[0]););
+
 
         //while (MenuHandler() != 0) {}
     }
