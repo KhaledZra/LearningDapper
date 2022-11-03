@@ -81,7 +81,7 @@ class DatabaseManager
         db.Execute(sqlCode, data);
     }
     
-    public List<T> SqlSelect<T>(MySqlConnection db, string tableName) where T : IsItem // Read
+    public List<T> SqlSelect<T>(MySqlConnection db, string tableName) where T : Entity // Read
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, false);
 

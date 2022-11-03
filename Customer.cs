@@ -1,8 +1,7 @@
 ﻿namespace DapperLDemo;
 
-class Customer : IsItem, IFormatedToString
+class Customer : Entity, IFormatedToString
 {
-    public int Id { get; set; }
     public string? Email { get; set; }
     public string? Name { get; set; }
     public string? Adress_Street { get; set; }

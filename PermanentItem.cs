@@ -1,8 +1,7 @@
 ﻿namespace DapperLDemo;
 
-class PermanentItem : IsItem, IFormatedToString
+class PermanentItem : Entity, IFormatedToString
 {
-    public int Id { get; set; }
     public int Label_Id { get; set; }
     public int Media_Id { get; set; }
     public string? Name { get; set; }

@@ -1,8 +1,7 @@
 ﻿namespace DapperLDemo;
 
-class Label : IsItem, IFormatedToString
+class Label : Entity, IFormatedToString
 {
-    public int Id { get; set; }
     public string? Name { get; set; }
     
     public override string ToString()

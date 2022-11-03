@@ -353,7 +353,7 @@ class Program
     //     // });
     // } // TODO REFACTOR AND REMOVE! InsertCustomer()
 
-    private static void ShowTable<T>(DatabaseManager db) where T : IsItem, IFormatedToString
+    private static void ShowTable<T>(DatabaseManager db) where T : Entity, IFormatedToString
     {
         string tableName = typeof(T).ToString().Split(".")[1];
         VisualHeader(tableName+"s");
