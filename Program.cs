@@ -29,20 +29,7 @@ class Program
     {
         Console.Clear();
         Console.WriteLine("Learning dapper!");
-
-        // List<string> listTest = ListMethod();
-        // IEnumerable<string> ieTest = IEnumerableMethod();
-        //
-        // Console.WriteLine(listTest);
-        // Console.WriteLine(ieTest);
         
-        // Displays the values of the Array.
-        // int i = 0;
-        // System.Collections.IEnumerator myEnumerator = ieTest.GetEnumerator();
-        // Console.WriteLine( "The Array contains the following values:" );
-        // while (( myEnumerator.MoveNext() ) && ( myEnumerator.Current != null ))
-        //     Console.WriteLine( "[{0}] {1}", i++, myEnumerator.Current );
-
         while (MenuHandler() != 0) {}
     }
 
@@ -55,6 +42,12 @@ class Program
         strings.Add("test");
 
         return strings;
+        
+        // List<string> listTest = ListMethod();
+        // IEnumerable<string> ieTest = IEnumerableMethod();
+        //
+        // Console.WriteLine(listTest);
+        // Console.WriteLine(ieTest);
     }
     
     public static IEnumerable<string> IEnumerableMethod()
@@ -66,6 +59,13 @@ class Program
         strings.Add("test");
 
         return strings;
+        
+        // Displays the values of the Array.
+        // int i = 0;
+        // System.Collections.IEnumerator myEnumerator = ieTest.GetEnumerator();
+        // Console.WriteLine( "The Array contains the following values:" );
+        // while (( myEnumerator.MoveNext() ) && ( myEnumerator.Current != null ))
+        //     Console.WriteLine( "[{0}] {1}", i++, myEnumerator.Current );
     }
 
 
@@ -358,7 +358,7 @@ class Program
         string tableName = typeof(T).ToString().Split(".")[1];
         VisualHeader(tableName+"s");
         
-        foreach (T currentItem in db.SqlSelect<T>(db.ConnectToDb(), tableName+"s"))
+        foreach (T currentItem in db.SqlSelect<T>(tableName+"s"))
         {
             Console.WriteLine($"{currentItem.Id}. {currentItem.ToString()}");
             Console.WriteLine("---");
@@ -372,7 +372,7 @@ class Program
 
         if (newObject != null)
         {
-            db.SqlInsert<T>(db.ConnectToDb(), tableName, newObject);
+            db.SqlInsert<T>(tableName, newObject);
             Console.WriteLine(newObject.ToString());
             Console.WriteLine("---Added!--");
         }

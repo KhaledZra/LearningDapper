@@ -69,7 +69,7 @@ class DatabaseManager
     
     
     // CRUD methods
-    public void SqlInsert<T>(MySqlConnection db, string tableName, T data) where T : IFormatedToString
+    public void SqlInsert<T>(string tableName, T data) where T : IFormatedToString // Create
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, true);
         string columnNamesValues = GetFormatedPropertiesString<T>();
@@ -78,13 +78,20 @@ class DatabaseManager
             $"INSERT INTO {tableName} ({columnNames}) " +
             $"VALUES ({columnNamesValues})";
         
-        db.Execute(sqlCode, data);
+        ConnectToDb().Execute(sqlCode, data);
     }
     
-    public List<T> SqlSelect<T>(MySqlConnection db, string tableName) where T : Entity // Read
+    public List<T> SqlSelect<T>(string tableName) where T : Entity // Read
     {
         string columnNames = GetFormatedPropertiesString<T>(tableName, false);
 
-        return db.Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
+        return ConnectToDb().Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
+    }
+    
+    public List<T> SqlUpdate<T>(string tableName) where T : Entity // Update
+    {
+        string columnNames = GetFormatedPropertiesString<T>(tableName, false);
+
+        return ConnectToDb().Query<T>($"SELECT {columnNames} FROM {tableName};").ToList();
     }
 }
