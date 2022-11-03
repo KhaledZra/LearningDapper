@@ -30,20 +30,20 @@ class Program
         Console.Clear();
         Console.WriteLine("Learning dapper!");
 
-        List<string> listTest = ListMethod();
-        IEnumerable<string> ieTest = IEnumerableMethod();
-
-        Console.WriteLine(listTest);
-        Console.WriteLine(ieTest);
+        // List<string> listTest = ListMethod();
+        // IEnumerable<string> ieTest = IEnumerableMethod();
+        //
+        // Console.WriteLine(listTest);
+        // Console.WriteLine(ieTest);
         
         // Displays the values of the Array.
-        int i = 0;
-        System.Collections.IEnumerator myEnumerator = ieTest.GetEnumerator();
-        Console.WriteLine( "The Array contains the following values:" );
-        while (( myEnumerator.MoveNext() ) && ( myEnumerator.Current != null ))
-            Console.WriteLine( "[{0}] {1}", i++, myEnumerator.Current );
+        // int i = 0;
+        // System.Collections.IEnumerator myEnumerator = ieTest.GetEnumerator();
+        // Console.WriteLine( "The Array contains the following values:" );
+        // while (( myEnumerator.MoveNext() ) && ( myEnumerator.Current != null ))
+        //     Console.WriteLine( "[{0}] {1}", i++, myEnumerator.Current );
 
-        // while (MenuHandler() != 0) {}
+        while (MenuHandler() != 0) {}
     }
 
     public static List<string> ListMethod()
